@@ -7,6 +7,8 @@ import pandas as pd
 import requests
 from pymatgen.core import Lattice, Structure
 
+from tqdm import tqdm
+
 from .base import BaseDownloader
 from .utils import (
     create_metadata_row,
@@ -19,16 +21,21 @@ class OPTIMADEDownloader(BaseDownloader):
     Generic downloader for OPTIMADE providers.
     """
 
+    provider_name = ""
+
     BASE_URL: str = ""
 
     PAGE_SIZE = 100
 
     def __init__(self, **kwargs):
+
         super().__init__(**kwargs)
+
+        self.session = requests.Session()
 
         if not self.BASE_URL:
             raise ValueError(
-                "BASE_URL must be defined by subclasses."
+                "BASE_URL must be defined."
             )
 
     def build_filter(
@@ -69,7 +76,7 @@ class OPTIMADEDownloader(BaseDownloader):
 
         while url:
 
-            response = requests.get(
+            response = self.session.get(
                 url,
                 params=params,
                 timeout=120,
@@ -103,9 +110,18 @@ class OPTIMADEDownloader(BaseDownloader):
             attributes["lattice_vectors"]
         )
 
+        species = attributes.get(
+            "species_at_sites"
+        )
+
+        if species is None:
+            raise ValueError(
+                "Missing species_at_sites."
+            )
+
         return Structure(
             lattice=lattice,
-            species=attributes["species_at_sites"],
+            species=species,
             coords=attributes["cartesian_site_positions"],
             coords_are_cartesian=True,
         )
@@ -122,11 +138,20 @@ class OPTIMADEDownloader(BaseDownloader):
         skipped = 0
         failed = 0
 
-        for entry in self.iter_entries(chemsys):
+        for entry in tqdm(
+            self.iter_entries(chemsys),
+            desc=chemsys,
+        ):
 
             try:
 
                 attributes = entry["attributes"]
+
+                if (
+                    attributes.get("lattice_vectors") is None
+                    or attributes.get("cartesian_site_positions") is None
+                ):
+                    continue
 
                 structure = self.build_structure(
                     attributes

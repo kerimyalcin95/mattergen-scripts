@@ -87,6 +87,7 @@ def main():
 
     downloader = DOWNLOADERS[args.database](
         api_key=args.api_key,
+        provider=args.provider,
     )
 
     for chemsys in args.chemsys:
