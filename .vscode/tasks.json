@@ -2,15 +2,69 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run Basic Statistics",
+            "label": "Run Basic Statistics - Al-O",
             "type": "shell",
             "command": "python",
             "args": [
                 "01_basic_statistics.py",
                 "--input",
-                "../../data/generated_structures",
+                "../../data/Al-O/generated_crystals_cif",
                 "--output",
-                "../../data/results",
+                "../../data/results/Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/Fe-O/generated_crystals_cif",
+                "--output",
+                "../../data/results/Fe-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/Ti-O/generated_crystals_cif",
+                "--output",
+                "../../data/results/Ti-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/Y-Al-O/generated_crystals_cif",
+                "--output",
+                "../../data/results/Y-Al-O",
                 "--workers",
                 "-1"
             ],

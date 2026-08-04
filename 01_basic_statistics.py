@@ -496,19 +496,21 @@ def save_csv(
         index=False,
     )
 
-    failed = df.loc[
-        ~df["valid"],
-        ["file", "error"],
-    ]
+    failed = df[df["valid"] == False]
 
-    if len(failed):
+    if not failed.empty:
 
-        failed.to_csv(
+        columns = ["file"]
+
+        if "error" in failed.columns:
+            columns.append("error")
+
+        failed[columns].to_csv(
             output_dir / "failed_files.csv",
             index=False,
         )
 
-        # -----------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------
 
 
 def plot_histogram(
