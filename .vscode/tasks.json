@@ -20,15 +20,69 @@
             "problemMatcher": []
         },
         {
-            "label": "Run Basic Statistics - Al-O",
+            "label": "Download MaterialsProject - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "mp",
+                "--chemsys",
+                "Fe-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download MaterialsProject - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "mp",
+                "--chemsys",
+                "Ti-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download MaterialsProject - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "mp",
+                "--chemsys",
+                "Y-Al-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - MatterGen - Al-O",
             "type": "shell",
             "command": "python",
             "args": [
                 "01_basic_statistics.py",
                 "--input",
-                "../../data/Al-O/generated_crystals_cif",
+                "../../data/MatterGen/Al-O/generated_crystals_cif",
                 "--output",
-                "../../data/results/Al-O",
+                "../../results/MatterGen/Al-O",
                 "--workers",
                 "-1"
             ],
@@ -38,15 +92,15 @@
             "problemMatcher": []
         },
         {
-            "label": "Run Basic Statistics - Fe-O",
+            "label": "Run Basic Statistics - MatterGen - Fe-O",
             "type": "shell",
             "command": "python",
             "args": [
                 "01_basic_statistics.py",
                 "--input",
-                "../../data/Fe-O/generated_crystals_cif",
+                "../../data/MatterGen/Fe-O/generated_crystals_cif",
                 "--output",
-                "../../data/results/Fe-O",
+                "../../results/MatterGen/Fe-O",
                 "--workers",
                 "-1"
             ],
@@ -56,15 +110,15 @@
             "problemMatcher": []
         },
         {
-            "label": "Run Basic Statistics - Ti-O",
+            "label": "Run Basic Statistics - MatterGen - Ti-O",
             "type": "shell",
             "command": "python",
             "args": [
                 "01_basic_statistics.py",
                 "--input",
-                "../../data/Ti-O/generated_crystals_cif",
+                "../../data/MatterGen/Ti-O/generated_crystals_cif",
                 "--output",
-                "../../data/results/Ti-O",
+                "../../results/MatterGen/Ti-O",
                 "--workers",
                 "-1"
             ],
@@ -74,15 +128,87 @@
             "problemMatcher": []
         },
         {
-            "label": "Run Basic Statistics - Y-Al-O",
+            "label": "Run Basic Statistics - MatterGen - Y-Al-O",
             "type": "shell",
             "command": "python",
             "args": [
                 "01_basic_statistics.py",
                 "--input",
-                "../../data/Y-Al-O/generated_crystals_cif",
+                "../../data/MatterGen/Y-Al-O/generated_crystals_cif",
                 "--output",
-                "../../data/results/Y-Al-O",
+                "../../results/MatterGen/Y-Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - MaterialsProject - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/MaterialsProject/Al-O",
+                "--output",
+                "../../results/MaterialsProject/Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - MaterialsProject - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/MaterialsProject/Fe-O",
+                "--output",
+                "../../results/MaterialsProject/Fe-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - MaterialsProject - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/MaterialsProject/Ti-O",
+                "--output",
+                "../../results/MaterialsProject/Ti-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - MaterialsProject - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/MaterialsProject/Y-Al-O",
+                "--output",
+                "../../results/MaterialsProject/Y-Al-O",
                 "--workers",
                 "-1"
             ],
