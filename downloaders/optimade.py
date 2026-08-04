@@ -145,6 +145,10 @@ class OPTIMADEDownloader(BaseDownloader):
                     )
                     downloaded += 1
 
+                provider_metadata = self.extract_provider_metadata(
+                    attributes
+                )
+
                 metadata.append(
                     create_metadata_row(
                         database=self.database_name,
@@ -159,14 +163,7 @@ class OPTIMADEDownloader(BaseDownloader):
                             "elements",
                             [],
                         ),
-                        space_group=None,
-                        space_group_number=None,
-                        crystal_system=None,
-                        density=None,
-                        volume=structure.volume,
-                        band_gap=None,
-                        energy_above_hull=None,
-                        is_stable=None,
+                        **provider_metadata,
                     )
                 )
 
@@ -200,3 +197,15 @@ class OPTIMADEDownloader(BaseDownloader):
         print("=" * 70)
 
         return metadata_df
+
+    def extract_provider_metadata(
+        self,
+        attributes: dict,
+    ) -> dict:
+        """
+        Provider-specific metadata.
+
+        Override in subclasses.
+        """
+
+        return {}

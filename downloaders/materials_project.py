@@ -84,8 +84,6 @@ class MaterialsProjectDownloader(BaseDownloader):
 
                         downloaded += 1
 
-                    symmetry = document.symmetry
-
                     metadata.append(
                         create_metadata_row(
                             database="MaterialsProject",
@@ -95,7 +93,9 @@ class MaterialsProjectDownloader(BaseDownloader):
                             structure=document.structure,
                             formula=document.formula_pretty,
                             elements=document.elements,
-                            symmetry=symmetry,
+                            space_group=document.symmetry.symbol,
+                            space_group_number=document.symmetry.number,
+                            crystal_system=document.symmetry.crystal_system,
                             density=document.density,
                             volume=document.volume,
                             band_gap=getattr(document, "band_gap", None),
