@@ -92,6 +92,9 @@ class OPTIMADEDownloader(BaseDownloader):
                 timeout=120,
             )
 
+            print("STATUS :", response.status_code)
+            print("FINAL  :", response.url)
+
             if response.status_code != 200:
                 print(
                     f""

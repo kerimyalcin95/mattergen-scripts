@@ -6,7 +6,7 @@ class AlexandriaDownloader(OPTIMADEDownloader):
     database_name = "Alexandria"
 
     BASE_URL = (
-        "https://alexandria.icams.rub.de/pbe"
+        "https://alexandria.icams.rub.de/pbe/v1"
     )
 
     def extract_provider_metadata(

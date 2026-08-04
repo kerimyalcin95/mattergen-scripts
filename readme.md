@@ -1,6 +1,10 @@
 # MatterGen Scripts
 
-A collection of Python utilities for downloading, analyzing, and preparing crystal structure datasets for MatterGen and other materials science workflows.
+A collection of Python scripts for downloading, analyzing, and benchmarking crystal structure datasets from MatterGen and established materials databases.
+
+The goal of this project is to evaluate the quality, realism, diversity, and novelty of MatterGen-generated crystal structures by comparing them against large experimental and computational crystal databases using a unified analysis pipeline.
+
+---
 
 ## Table of Contents
 
@@ -9,35 +13,40 @@ A collection of Python utilities for downloading, analyzing, and preparing cryst
   - [Features](#features)
   - [Project Structure](#project-structure)
   - [Requirements](#requirements)
+  - [Installation](#installation)
   - [Materials Project API Key](#materials-project-api-key)
   - [Scripts](#scripts)
     - [00\_download\_database.py](#00_download_databasepy)
-      - [Supported Databases](#supported-databases)
       - [Download Features](#download-features)
       - [Download Example](#download-example)
-      - [Download Output](#download-output)
     - [01\_basic\_statistics.py](#01_basic_statisticspy)
       - [Supported File Formats](#supported-file-formats)
       - [Computed Properties](#computed-properties)
-      - [Analysis Features](#analysis-features)
-      - [Statistics Example](#statistics-example)
       - [Statistics Output](#statistics-output)
+      - [Statistics Example](#statistics-example)
+  - [Planned Analysis Pipeline](#planned-analysis-pipeline)
+  - [Directory Structure](#directory-structure)
   - [Typical Workflow](#typical-workflow)
-  - [Output Structure](#output-structure)
-  - [Notes](#notes)
+  - [Supported Databases](#supported-databases)
+  - [Roadmap](#roadmap)
   - [License](#license)
 
 ---
 
 ## Features
 
-- Download crystal structures from supported databases.
-- Generate standardized metadata for downloaded datasets.
+- Download crystal structures from multiple materials databases.
+- Support Materials Project and OPTIMADE-compatible databases.
+- Download multiple chemical systems in a single run.
+- Store all downloaded structures as CIF files.
+- Automatically create the required directory structure.
+- Skip already downloaded structures.
 - Analyze CIF, XYZ, and EXTXYZ crystal structures.
 - Compute structural and crystallographic statistics.
-- Generate publication-quality figures in PDF and PNG formats.
-- Export per-structure and summary CSV files.
+- Export CSV summaries.
+- Generate publication-quality PDF and PNG figures.
 - Support parallel processing using all available CPU cores.
+- Provide a common benchmarking workflow for MatterGen and reference datasets.
 
 ---
 
@@ -47,8 +56,20 @@ A collection of Python utilities for downloading, analyzing, and preparing cryst
 .
 ├── 00_download_database.py
 ├── 01_basic_statistics.py
+├── downloaders/
+│   ├── __init__.py
+│   ├── alexandria.py
+│   ├── base.py
+│   ├── cod.py
+│   ├── jarvis.py
+│   ├── materials_project.py
+│   ├── oqmd.py
+│   ├── optimade.py
+│   └── utils.py
 ├── data/
 ├── results/
+├── .env.example
+├── .gitignore
 └── README.md
 ```
 
@@ -67,27 +88,74 @@ A collection of Python utilities for downloading, analyzing, and preparing cryst
 - seaborn
 - tqdm
 - joblib
+- requests
 - python-dotenv
 
-Install all dependencies with:
+---
+
+## Installation
+
+Clone the repository:
 
 ```bash
-pip install pymatgen mp-api ase numpy pandas scipy matplotlib seaborn tqdm joblib python-dotenv
+git clone https://github.com/<username>/mattergen-scripts.git
+
+cd mattergen-scripts
+```
+
+Install the required packages:
+
+```bash
+pip install \
+    pymatgen \
+    mp-api \
+    ase \
+    numpy \
+    pandas \
+    scipy \
+    matplotlib \
+    seaborn \
+    tqdm \
+    joblib \
+    requests \
+    python-dotenv
 ```
 
 ---
 
 ## Materials Project API Key
 
-Downloading from the Materials Project requires an API key.
+Materials Project downloads require an API key.
 
-Create a `.env` file:
+Create a `.env` file by copying the example:
+
+Linux/macOS
+
+```bash
+cp .env.example .env
+```
+
+Windows PowerShell
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Edit the `.env` file:
 
 ```text
 MP_API_KEY=YOUR_API_KEY
 ```
 
-Alternatively, pass the key directly using the `--api-key` argument.
+The downloader automatically loads the API key from the `.env` file.
+
+You can also override it manually:
+
+```bash
+python 00_download_database.py \
+    --database mp \
+    --api-key YOUR_API_KEY
+```
 
 ---
 
@@ -95,45 +163,25 @@ Alternatively, pass the key directly using the `--api-key` argument.
 
 ### 00_download_database.py
 
-Downloads crystal structures from supported databases and stores them in a standardized directory structure.
-
-#### Supported Databases
-
-| Database          | Status      |
-| ----------------- | ----------- |
-| Materials Project | Supported   |
-| COD               | Placeholder |
-| OPTIMADE          | Placeholder |
+Downloads crystal structures from supported databases and stores them as CIF files.
 
 #### Download Features
 
-- Download one or more chemical systems.
-- Save structures as CIF files.
-- Automatically create output directories.
-- Generate `metadata.csv` for each dataset.
-- Skip structures that already exist.
-- Print a download summary after completion.
+- Download one or more chemical systems
+- Download multiple databases
+- Save structures as CIF files
+- Skip existing downloads
+- Automatically create output folders
+- Progress bars
+- Download summaries
 
 #### Download Example
 
 ```bash
 python 00_download_database.py \
     --database mp \
-    --chemsys Al-O Fe-O Y-Al-O \
+    --chemsys Al-O Fe-O Ti-O Y-Al-O \
     --output ../../data
-```
-
-#### Download Output
-
-```text
-data/
-└── MaterialsProject/
-    ├── Al-O/
-    │   ├── mp-*.cif
-    │   └── metadata.csv
-    └── Fe-O/
-        ├── mp-*.cif
-        └── metadata.csv
 ```
 
 ---
@@ -150,7 +198,7 @@ Computes descriptive statistics for crystal structure datasets.
 
 #### Computed Properties
 
-For every structure, the script computes:
+For every structure:
 
 - Chemical formula
 - Reduced formula
@@ -161,104 +209,137 @@ For every structure, the script computes:
 - Cell volume
 - Density
 - Space group
+- Crystal system
 - Structure validity
 
-#### Analysis Features
+#### Statistics Output
 
-- Parallel processing with Joblib.
-- Automatic loading using pymatgen or ASE.
-- Summary statistics for all numerical properties.
-- Detection of invalid structures.
-- CSV export.
-- Histogram generation.
-- Composition distribution plots.
-- Space group distribution plots.
-- Lattice parameter distribution plots.
+- `basic_statistics.csv`
+- `summary.csv`
+- `failed_files.csv`
+- Density histogram
+- Volume histogram
+- Number of atoms histogram
+- Lattice parameter distributions
+- Space group distribution
+- Composition distribution
 
 #### Statistics Example
 
 ```bash
 python 01_basic_statistics.py \
     --input ../../data/MaterialsProject/Al-O \
-    --output ../../results/Al-O \
+    --output ../../results/MaterialsProject/Al-O \
     --workers -1
 ```
 
-#### Statistics Output
+---
+
+## Planned Analysis Pipeline
+
+| Script | Analysis |
+| ------ | -------- |
+| 00_download_database.py | Download reference datasets |
+| 01_basic_statistics.py | Basic structural statistics |
+| 02_symmetry_analysis.py | Space groups and crystal systems |
+| 03_coordination_analysis.py | CrystalNN and VoronoiNN coordination |
+| 04_bond_analysis.py | Bond lengths, bond angles, nearest neighbors |
+| 05_rdf_analysis.py | Radial distribution functions (RDF) |
+| 06_chemical_analysis.py | Oxidation states and charge neutrality |
+| 07_fingerprint_analysis.py | Crystal fingerprints |
+| 08_novelty_analysis.py | Duplicate detection and structural similarity |
+| 09_distribution_comparison.py | Statistical comparison between datasets |
+| 10_stability_analysis.py | Formation energy, energy above hull, band gap and stability metrics |
+
+---
+
+## Directory Structure
 
 ```text
+data/
+├── MatterGen/
+│   ├── Al-O/
+│   │   └── generated_crystals_cif/
+│   ├── Fe-O/
+│   ├── Ti-O/
+│   └── Y-Al-O/
+│
+├── MaterialsProject/
+│   ├── Al-O/
+│   ├── Fe-O/
+│   ├── Ti-O/
+│   └── Y-Al-O/
+│
+├── COD/
+├── OQMD/
+├── JARVIS/
+└── Alexandria/
+
 results/
-└── Al-O/
-    ├── basic_statistics.csv
-    ├── summary.csv
-    ├── failed_files.csv
-    ├── num_atoms_histogram.pdf
-    ├── num_atoms_histogram.png
-    ├── volume_histogram.pdf
-    ├── volume_histogram.png
-    ├── density_histogram.pdf
-    ├── density_histogram.png
-    ├── lattice_parameters.pdf
-    ├── lattice_parameters.png
-    ├── spacegroup_distribution.pdf
-    ├── spacegroup_distribution.png
-    ├── composition_distribution.pdf
-    └── composition_distribution.png
+├── MatterGen/
+├── MaterialsProject/
+├── COD/
+├── OQMD/
+├── JARVIS/
+└── Alexandria/
 ```
 
 ---
 
 ## Typical Workflow
 
-1. Download crystal structures from the Materials Project.
-2. Store the generated CIF files and metadata.
-3. Run the statistics script on the downloaded dataset.
-4. Review the generated CSV files.
-5. Inspect the generated figures for dataset characteristics.
+1. Download reference crystal structures from one or more databases.
+2. Generate crystal structures with MatterGen.
+3. Run the same analysis pipeline on every dataset.
+4. Compare statistical distributions.
+5. Compare crystal symmetry distributions.
+6. Compare local atomic environments.
+7. Compare bond geometry and RDFs.
+8. Evaluate novelty and structural diversity.
+9. Compare stability-related properties where available.
+10. Determine whether MatterGen generates realistic crystal structures.
 
 ---
 
-## Output Structure
+## Supported Databases
 
-```text
-data/
-└── MaterialsProject/
-    └── Al-O/
-        ├── mp-1000.cif
-        ├── mp-1001.cif
-        ├── ...
-        └── metadata.csv
-
-results/
-└── Al-O/
-    ├── basic_statistics.csv
-    ├── summary.csv
-    ├── failed_files.csv
-    ├── density_histogram.pdf
-    ├── density_histogram.png
-    ├── volume_histogram.pdf
-    ├── volume_histogram.png
-    ├── lattice_parameters.pdf
-    ├── lattice_parameters.png
-    ├── spacegroup_distribution.pdf
-    ├── spacegroup_distribution.png
-    ├── composition_distribution.pdf
-    └── composition_distribution.png
-```
+| Database | Type | Status |
+| -------- | ------------ | :----: |
+| Materials Project | DFT | ✅ |
+| COD | Experimental | ✅ |
+| JARVIS | DFT | ✅ |
+| OQMD | DFT | ✅ |
+| Alexandria | DFT / ML | ⚠ Experimental |
 
 ---
 
-## Notes
+## Roadmap
 
-- Existing downloaded structures are skipped automatically.
-- Metadata is generated for every downloaded dataset.
-- Invalid structures are listed in `failed_files.csv`.
-- Figures are exported as both PDF and PNG.
-- The `--workers -1` option uses all available CPU cores.
-- Materials Project authentication can be supplied via `.env` or the command line.
+The planned benchmark will compare:
+
+- Chemical composition
+- Crystal symmetry
+- Space group distributions
+- Lattice parameters
+- Density
+- Cell volume
+- Coordination environments
+- Bond lengths
+- Bond angles
+- Radial distribution functions (RDF)
+- Crystal fingerprints
+- Structural similarity
+- Novelty
+- Dataset similarity
+- Formation energy
+- Energy above hull
+- Band gap
+- Stability metrics
+
+The objective is to determine whether MatterGen generates physically meaningful, chemically realistic, and structurally diverse crystal structures compared with established experimental and computational materials databases.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the **MIT License**.
