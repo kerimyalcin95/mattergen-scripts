@@ -149,6 +149,9 @@ def download_materials_project(
                 "density",
                 "volume",
                 "elements",
+                "band_gap",
+                "energy_above_hull",
+                "is_stable",
             ],
         )
 
@@ -176,22 +179,22 @@ def download_materials_project(
                 symmetry = document.symmetry
 
                 metadata.append(
-                    {
-                        "database": "MaterialsProject",
-                        "chemsys": chemsys,
-                        "source_id": str(document.material_id),
-                        "filename": filename,
-                        "formula": document.formula_pretty,
-                        "elements": ",".join(
-                            map(str, document.elements)
-                        ),
-                        "num_sites": len(document.structure),
-                        "space_group": symmetry.symbol,
-                        "space_group_number": symmetry.number,
-                        "crystal_system": symmetry.crystal_system,
-                        "density": document.density,
-                        "volume": document.volume,
-                    }
+                    create_metadata_row(
+                        database="MaterialsProject",
+                        chemsys=chemsys,
+                        source_id=str(document.material_id),
+                        filename=filename,
+                        structure=document.structure,
+                        formula=document.formula_pretty,
+                        elements=document.elements,
+                        symmetry=symmetry,
+                        density=document.density,
+                        volume=document.volume,
+                        band_gap=getattr(document, "band_gap", None),
+                        energy_above_hull=getattr(
+                            document, "energy_above_hull", None),
+                        is_stable=getattr(document, "is_stable", None),
+                    )
                 )
 
             except Exception as exception:
@@ -283,26 +286,39 @@ DOWNLOADERS = {
 
 def create_metadata_row(
     database: str,
+    chemsys: str,
     source_id: str,
     filename: str,
+    structure,
     formula: str,
     elements,
-    space_group: str,
-    crystal_system: str,
-    density: float,
-    volume: float,
+    symmetry,
+    density,
+    volume,
+    band_gap=None,
+    energy_above_hull=None,
+    is_stable=None,
 ) -> dict:
+    """
+    Create a standardized metadata row for every database.
+    """
 
     return {
         "database": database,
+        "chemsys": chemsys,
         "source_id": source_id,
         "filename": filename,
         "formula": formula,
         "elements": ",".join(map(str, elements)),
-        "space_group": space_group,
-        "crystal_system": crystal_system,
+        "num_sites": len(structure),
+        "space_group": symmetry.symbol,
+        "space_group_number": symmetry.number,
+        "crystal_system": symmetry.crystal_system,
         "density": density,
         "volume": volume,
+        "band_gap": band_gap,
+        "energy_above_hull": energy_above_hull,
+        "is_stable": is_stable,
     }
 
 
