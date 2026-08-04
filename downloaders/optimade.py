@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-from abc import abstractmethod
 from pathlib import Path
 
 import pandas as pd
 import requests
-from pymatgen.core import Lattice, Structure
+
+from pymatgen.core import (
+    Lattice,
+    Structure,
+)
 
 from tqdm import tqdm
 
@@ -21,9 +24,10 @@ class OPTIMADEDownloader(BaseDownloader):
     Generic downloader for OPTIMADE providers.
     """
 
+    database_name = ""
     provider_name = ""
 
-    BASE_URL: str = ""
+    BASE_URL = ""
 
     PAGE_SIZE = 100
 
@@ -33,22 +37,29 @@ class OPTIMADEDownloader(BaseDownloader):
 
         self.session = requests.Session()
 
+        self.session.headers.update(
+            {
+                "User-Agent": (
+                    "Mozilla/5.0 "
+                    "(Windows NT 10.0; Win64; x64)"
+                ),
+                "Accept": "application/json",
+            }
+        )
+
         if not self.BASE_URL:
             raise ValueError(
                 "BASE_URL must be defined."
             )
 
+    ####################################################################
+    # Query
+    ####################################################################
+
     def build_filter(
         self,
         chemsys: str,
     ) -> str:
-        """
-        Build an OPTIMADE filter from a chemical system.
-
-        Example
-        -------
-        Al-O -> elements HAS ALL "Al", "O"
-        """
 
         elements = chemsys.split("-")
 
@@ -66,14 +77,13 @@ class OPTIMADEDownloader(BaseDownloader):
         self,
         chemsys: str,
     ):
-        """
-        Iterate over all matching OPTIMADE structures.
-        """
 
         url = f"{self.BASE_URL}/structures"
 
         params = {
-            "filter": self.build_filter(chemsys),
+            "filter": self.build_filter(
+                chemsys
+            ),
             "page_limit": self.PAGE_SIZE,
         }
 
@@ -85,22 +95,21 @@ class OPTIMADEDownloader(BaseDownloader):
                 timeout=120,
             )
 
-            try:
-                response.raise_for_status()
-            except requests.HTTPError as exception:
-                raise RuntimeError(
-                    f"{self.database_name} OPTIMADE server returned "
-                    f"{response.status_code}.\n"
-                    f"URL: {response.url}\n"
-                    f"Response:\n{response.text}"
-                ) from exception
+            response.raise_for_status()
 
             payload = response.json()
 
-            for entry in payload.get("data", []):
+            for entry in payload.get(
+                "data",
+                [],
+            ):
                 yield entry
 
-            next_link = payload.get("links", {}).get("next")
+            next_link = (
+                payload
+                .get("links", {})
+                .get("next")
+            )
 
             if isinstance(next_link, dict):
                 url = next_link.get("href")
@@ -109,33 +118,94 @@ class OPTIMADEDownloader(BaseDownloader):
 
             params = None
 
+    ####################################################################
+    # Structure
+    ####################################################################
+
+    def has_complete_structure(
+        self,
+        attributes: dict,
+    ) -> bool:
+
+        return (
+            attributes.get(
+                "lattice_vectors"
+            )
+            and (
+                attributes.get(
+                    "cartesian_site_positions"
+                )
+                or attributes.get(
+                    "fractional_site_positions"
+                )
+            )
+            and attributes.get(
+                "species_at_sites"
+            )
+        )
+
     def build_structure(
         self,
         attributes: dict,
     ) -> Structure:
-        """
-        Convert an OPTIMADE structure into a pymatgen Structure.
-        """
 
         lattice = Lattice(
             attributes["lattice_vectors"]
         )
 
-        species = attributes.get(
-            "species_at_sites"
+        coords = attributes.get(
+            "cartesian_site_positions"
         )
 
-        if species is None:
-            raise ValueError(
-                "Missing species_at_sites."
-            )
+        coords_are_cartesian = True
+
+        if coords is None:
+
+            coords = attributes[
+                "fractional_site_positions"
+            ]
+
+            coords_are_cartesian = False
 
         return Structure(
             lattice=lattice,
-            species=species,
-            coords=attributes["cartesian_site_positions"],
-            coords_are_cartesian=True,
+            species=attributes[
+                "species_at_sites"
+            ],
+            coords=coords,
+            coords_are_cartesian=coords_are_cartesian,
         )
+
+    def download_structure(
+        self,
+        entry: dict,
+    ) -> Structure | None:
+
+        attributes = entry["attributes"]
+
+        if not self.has_complete_structure(
+            attributes
+        ):
+            return None
+
+        return self.build_structure(
+            attributes
+        )
+
+    ####################################################################
+    # Metadata
+    ####################################################################
+
+    def extract_provider_metadata(
+        self,
+        attributes: dict,
+    ) -> dict:
+
+        return {}
+
+    ####################################################################
+    # Download
+    ####################################################################
 
     def download(
         self,
@@ -149,108 +219,116 @@ class OPTIMADEDownloader(BaseDownloader):
         skipped = 0
         failed = 0
 
-        try:
-            for entry in tqdm(
-                self.iter_entries(chemsys),
-                desc=chemsys,
-            ):
+        print(
+            f"Connecting to {self.database_name}..."
+        )
 
-                try:
+        for entry in tqdm(
+            self.iter_entries(
+                chemsys,
+            ),
+            desc=chemsys,
+        ):
 
-                    attributes = entry["attributes"]
+            try:
 
-                    if (
-                        attributes.get("lattice_vectors") is None
-                        or attributes.get("cartesian_site_positions") is None
-                    ):
-                        continue
+                attributes = entry[
+                    "attributes"
+                ]
 
-                    structure = self.build_structure(
-                        attributes
+                structure = (
+                    self.download_structure(
+                        entry
+                    )
+                )
+
+                if structure is None:
+                    continue
+
+                filename = (
+                    f"{entry['id']}.cif"
+                )
+
+                filepath = (
+                    output_folder
+                    / filename
+                )
+
+                if filepath.exists():
+
+                    skipped += 1
+
+                else:
+
+                    save_structure(
+                        structure,
+                        filepath,
                     )
 
-                    filename = f"{entry['id']}.cif"
+                    downloaded += 1
 
-                    filepath = output_folder / filename
-
-                    if filepath.exists():
-                        skipped += 1
-                    else:
-                        save_structure(
-                            structure,
-                            filepath,
-                        )
-                        downloaded += 1
-
-                    provider_metadata = self.extract_provider_metadata(
-                        attributes
+                metadata.append(
+                    create_metadata_row(
+                        database=self.database_name,
+                        chemsys=chemsys,
+                        source_id=entry["id"],
+                        filename=filename,
+                        structure=structure,
+                        formula=attributes.get(
+                            "chemical_formula_reduced"
+                        ),
+                        elements=attributes.get(
+                            "elements",
+                            [],
+                        ),
+                        **self.extract_provider_metadata(
+                            attributes
+                        ),
                     )
+                )
 
-                    metadata.append(
-                        create_metadata_row(
-                            database=self.database_name,
-                            chemsys=chemsys,
-                            source_id=entry["id"],
-                            filename=filename,
-                            structure=structure,
-                            formula=attributes.get(
-                                "chemical_formula_reduced"
-                            ),
-                            elements=attributes.get(
-                                "elements",
-                                [],
-                            ),
-                            **provider_metadata,
-                        )
-                    )
+            except Exception as exception:
 
-                except Exception as exception:
+                failed += 1
 
-                    failed += 1
+                print(
+                    f"Failed "
+                    f"{entry.get('id')}: "
+                    f"{exception}"
+                )
 
-                    print(
-                        f"Failed {entry.get('id')}: "
-                        f"{exception}"
-                    )
-        except Exception as exception:
+        metadata = pd.DataFrame(
+            metadata
+        )
 
-            print()
-            print("=" * 70)
-            print(f"{self.database_name} download failed")
-            print("=" * 70)
-            print(exception)
-            print("=" * 70)
+        if not metadata.empty:
 
-        metadata_df = pd.DataFrame(metadata)
-
-        if not metadata_df.empty:
-
-            metadata_df.sort_values(
-                by="source_id",
+            metadata.sort_values(
+                "source_id",
                 inplace=True,
             )
 
         print()
         print("=" * 70)
-        print(f"{self.database_name} Download Summary")
+        print(
+            f"{self.database_name} Download Summary"
+        )
         print("=" * 70)
-        print(f"Chemical system : {chemsys}")
-        print(f"Downloaded      : {downloaded}")
-        print(f"Skipped         : {skipped}")
-        print(f"Failed          : {failed}")
-        print(f"Metadata rows   : {len(metadata_df)}")
+        print(
+            f"Chemical system : {chemsys}"
+        )
+        print(
+            f"Downloaded      : {downloaded}"
+        )
+        print(
+            f"Skipped         : {skipped}"
+        )
+        print(
+            f"Failed          : {failed}"
+        )
+        print(
+            f"Metadata rows   : {len(metadata)}"
+        )
         print("=" * 70)
 
-        return metadata_df
-
-    def extract_provider_metadata(
-        self,
-        attributes: dict,
-    ) -> dict:
-        """
-        Provider-specific metadata.
-
-        Override in subclasses.
-        """
-
-        return {}
+        return metadata

@@ -21,6 +21,9 @@ from __future__ import annotations
 
 from downloaders.materials_project import MaterialsProjectDownloader
 from downloaders.oqmd import OQMDDownloader
+from downloaders.jarvis import JARVISDownloader
+from downloaders.alexandria import AlexandriaDownloader
+from downloaders.cod import CODDownloader
 
 from downloaders.utils import write_metadata
 
@@ -36,6 +39,9 @@ load_dotenv()
 DOWNLOADERS = {
     "mp": MaterialsProjectDownloader,
     "oqmd": OQMDDownloader,
+    "jarvis": JARVISDownloader,
+    "alexandria": AlexandriaDownloader,
+    "cod": CODDownloader,
 }
 
 

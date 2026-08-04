@@ -39,49 +39,16 @@ def create_metadata_row(
     structure,
     formula: str,
     elements,
-    density=None,
-    volume=None,
-    band_gap=None,
-    energy_above_hull=None,
-    is_stable=None,
-    space_group=None,
-    space_group_number=None,
-    crystal_system=None,
+    symmetry,
+    density,
+    volume,
+    **provider_metadata,
 ) -> dict:
     """
-    Create a standardized metadata row.
-
-    If symmetry information is not provided, it is computed from the
-    reconstructed structure.
+    Create a standardized metadata row for every database.
     """
 
-    if (
-        space_group is None
-        or space_group_number is None
-        or crystal_system is None
-    ):
-
-        try:
-
-            analyzer = SpacegroupAnalyzer(structure)
-
-            space_group = analyzer.get_space_group_symbol()
-            space_group_number = analyzer.get_space_group_number()
-            crystal_system = analyzer.get_crystal_system()
-
-        except Exception:
-
-            space_group = None
-            space_group_number = None
-            crystal_system = None
-
-    if density is None:
-        density = float(structure.density)
-
-    if volume is None:
-        volume = structure.volume
-
-    return {
+    row = {
         "database": database,
         "chemsys": chemsys,
         "source_id": source_id,
@@ -89,12 +56,13 @@ def create_metadata_row(
         "formula": formula,
         "elements": ",".join(map(str, elements)),
         "num_sites": len(structure),
-        "space_group": space_group,
-        "space_group_number": space_group_number,
-        "crystal_system": crystal_system,
+        "space_group": symmetry.symbol,
+        "space_group_number": symmetry.number,
+        "crystal_system": symmetry.crystal_system,
         "density": density,
         "volume": volume,
-        "band_gap": band_gap,
-        "energy_above_hull": energy_above_hull,
-        "is_stable": is_stable,
     }
+
+    row.update(provider_metadata)
+
+    return row

@@ -146,6 +146,222 @@
             "problemMatcher": []
         },
         {
+            "label": "Download JARVIS - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "jarvis",
+                "--chemsys",
+                "Al-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download JARVIS - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "jarvis",
+                "--chemsys",
+                "Fe-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download JARVIS - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "jarvis",
+                "--chemsys",
+                "Ti-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download JARVIS - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "jarvis",
+                "--chemsys",
+                "Y-Al-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download Alexandria - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "alexandria",
+                "--chemsys",
+                "Al-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download Alexandria - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "alexandria",
+                "--chemsys",
+                "Fe-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download Alexandria - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "alexandria",
+                "--chemsys",
+                "Ti-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download Alexandria - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "alexandria",
+                "--chemsys",
+                "Y-Al-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download COD - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "cod",
+                "--chemsys",
+                "Al-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download COD - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "cod",
+                "--chemsys",
+                "Fe-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download COD - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "cod",
+                "--chemsys",
+                "Ti-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download COD - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "cod",
+                "--chemsys",
+                "Y-Al-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "Run Basic Statistics - MatterGen - Al-O",
             "type": "shell",
             "command": "python",
@@ -353,6 +569,222 @@
                 "../../data/OQMD/Y-Al-O",
                 "--output",
                 "../../results/OQMD/Y-Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - JARVIS - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/JARVIS/Al-O",
+                "--output",
+                "../../results/JARVIS/Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - JARVIS - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/JARVIS/Fe-O",
+                "--output",
+                "../../results/JARVIS/Fe-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - JARVIS - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/JARVIS/Ti-O",
+                "--output",
+                "../../results/JARVIS/Ti-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - JARVIS - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/JARVIS/Y-Al-O",
+                "--output",
+                "../../results/JARVIS/Y-Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - Alexandria - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/Alexandria/Al-O",
+                "--output",
+                "../../results/Alexandria/Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - Alexandria - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/Alexandria/Fe-O",
+                "--output",
+                "../../results/Alexandria/Fe-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - Alexandria - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/Alexandria/Ti-O",
+                "--output",
+                "../../results/Alexandria/Ti-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - Alexandria - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/Alexandria/Y-Al-O",
+                "--output",
+                "../../results/Alexandria/Y-Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - COD - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/COD/Al-O",
+                "--output",
+                "../../results/COD/Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - COD - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/COD/Fe-O",
+                "--output",
+                "../../results/COD/Fe-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - COD - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/COD/Ti-O",
+                "--output",
+                "../../results/COD/Ti-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - COD - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/COD/Y-Al-O",
+                "--output",
+                "../../results/COD/Y-Al-O",
                 "--workers",
                 "-1"
             ],
