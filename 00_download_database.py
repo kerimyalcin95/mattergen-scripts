@@ -17,18 +17,13 @@ python 00_download_database.py \
     --output ../../data
 """
 
-from downloaders.materials_project import MaterialsProjectDownloader
-
 from __future__ import annotations
+
+from downloaders.materials_project import MaterialsProjectDownloader
+from downloaders.utils import write_metadata
 
 import argparse
 from pathlib import Path
-
-import pandas as pd
-from tqdm import tqdm
-
-# Materials Project
-from mp_api.client import MPRester
 
 import os
 
@@ -36,10 +31,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASES = {
-    "mp": "MaterialsProject",
-    "cod": "COD",
-    "optimade": "OPTIMADE",
+DOWNLOADERS = {
+    "mp": MaterialsProjectDownloader,
 }
 
 
@@ -52,7 +45,7 @@ def parse_arguments():
     parser.add_argument(
         "--database",
         required=True,
-        choices=DATABASES.keys(),
+        choices=DOWNLOADERS.keys(),
         help="Database to download from.",
     )
 
@@ -85,98 +78,36 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def create_output_folder(
-    database: str,
-    chemsys: str,
-    output_root: Path,
-) -> Path:
-
-    database_name = DATABASES[database]
-
-    if database == "optimade":
-        raise NotImplementedError(
-            "OPTIMADE providers will be implemented in Part 2."
-        )
-
-    root = output_root / database_name / chemsys
-
-    root.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
-
-    return root
-
-
-def download_cod(
-    chemsys: str,
-    output_folder: Path,
-):
-    """
-    Placeholder.
-
-    Implemented in Part 2.
-    """
-
-    raise NotImplementedError(
-        "COD support will be added in Part 2."
-    )
-
-
-def download_optimade(
-    provider: str,
-    chemsys: str,
-    output_folder: Path,
-):
-    """
-    Placeholder.
-
-    Implemented in Part 2.
-    """
-
-    raise NotImplementedError(
-        "OPTIMADE support will be added in Part 2."
-    )
-
-
-DOWNLOADERS = {
-    "mp": MaterialsProjectDownloader
-}
-
-
 def main():
 
     args = parse_arguments()
+
+    downloader = DOWNLOADERS[args.database](
+        api_key=args.api_key,
+    )
 
     for chemsys in args.chemsys:
 
         print()
 
         print("=" * 70)
-        print(f"Database : {args.database}")
+        print(f"Database : {downloader.database_name}")
         print(f"Chemsys  : {chemsys}")
         print("=" * 70)
 
-        output_folder = create_output_folder(
-            database=args.database,
+        output_folder = downloader.create_output_folder(
             chemsys=chemsys,
             output_root=args.output,
         )
 
-        kwargs = {
-            "chemsys": chemsys,
-            "output_folder": output_folder,
-        }
-
-        if args.database == "optimade":
-            kwargs["provider"] = args.provider
-
-        downloader = DOWNLOADERS[args.database](
-            api_key=args.api_key,
-        )
-        downloader.download(
+        metadata = downloader.download(
             chemsys=chemsys,
             output_folder=output_folder,
+        )
+
+        write_metadata(
+            metadata,
+            output_folder,
         )
 
     print(f"Finished {chemsys}")

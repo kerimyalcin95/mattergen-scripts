@@ -1,5 +1,5 @@
 from .base import BaseDownloader
-from .utils import save_structure, write_metadata, create_metadata_row
+from .utils import save_structure, create_metadata_row
 
 from pathlib import Path
 import pandas as pd
@@ -16,6 +16,9 @@ load_dotenv()
 
 
 class MaterialsProjectDownloader(BaseDownloader):
+
+    database_name = "MaterialsProject"
+
     def __init__(self, api_key: str):
         self.api_key = api_key
 
@@ -116,11 +119,6 @@ class MaterialsProjectDownloader(BaseDownloader):
         metadata_df.sort_values(
             by="source_id",
             inplace=True,
-        )
-
-        write_metadata(
-            metadata_df,
-            output_folder,
         )
 
         print()
