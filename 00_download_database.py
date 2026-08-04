@@ -120,69 +120,125 @@ def download_materials_project(
     output_folder: Path,
 ):
     """
-    Download structures from Materials Project.
+    Download all structures of a chemical system from
+    the Materials Project.
     """
 
     if api_key is None:
         raise RuntimeError(
-            "Materials Project requires --api-key"
+            "Materials Project requires --api-key."
         )
 
     metadata = []
 
+    print("Connecting to Materials Project...")
+
     with MPRester(api_key) as mpr:
 
-        docs = mpr.materials.summary.search(
-            chemsys=chemsys,
-            fields=[
-                "material_id",
-                "formula_pretty",
-                "structure",
-                "symmetry",
-                "density",
-                "volume",
-                "elements",
-            ],
+        documents = list(
+            mpr.materials.summary.search(
+                chemsys=chemsys,
+                fields=[
+                    "material_id",
+                    "formula_pretty",
+                    "structure",
+                    "symmetry",
+                    "density",
+                    "volume",
+                    "elements",
+                ],
+            )
         )
 
-        docs = list(docs)
+        print(f"Found {len(documents)} structures.")
 
-        print(
-            f"Found {len(docs)} structures."
+        failed = 0
+        skipped = 0
+        downloaded = 0
+
+        for document in tqdm(
+            documents,
+            desc=f"Downloading {chemsys}",
+        ):
+
+            try:
+
+                structure = document.structure
+
+                filename = f"{document.material_id}.cif"
+
+                path = output_folder / filename
+
+                if path.exists():
+
+                    skipped += 1
+
+                    metadata.append(
+                        {
+                            "database": "MaterialsProject",
+                            "source_id": str(document.material_id),
+                            "filename": filename,
+                            "formula": document.formula_pretty,
+                            "elements": ",".join(
+                                map(str, document.elements)
+                            ),
+                            "space_group": document.symmetry.symbol,
+                            "crystal_system": document.symmetry.crystal_system,
+                            "density": document.density,
+                            "volume": document.volume,
+                        }
+                    )
+
+                    continue
+
+                save_structure(
+                    structure,
+                    path,
+                )
+
+                downloaded += 1
+
+                metadata.append(
+                    {
+                        "database": "MaterialsProject",
+                        "source_id": str(document.material_id),
+                        "filename": filename,
+                        "formula": document.formula_pretty,
+                        "elements": ",".join(
+                            map(str, document.elements)
+                        ),
+                        "space_group": document.symmetry.symbol,
+                        "crystal_system": document.symmetry.crystal_system,
+                        "density": document.density,
+                        "volume": document.volume,
+                    }
+                )
+
+            except Exception as exception:
+
+                failed += 1
+
+                print(
+                    f"Failed to download "
+                    f"{document.material_id}: {exception}"
+                )
+
+        write_metadata(
+            pd.DataFrame(metadata),
+            output_folder,
         )
 
-        for doc in tqdm(docs):
+        print()
 
-            structure = doc.structure
-
-            filename = (
-                f"{doc.material_id}.cif"
-            )
-
-            path = output_folder / filename
-
-            CifWriter(
-                structure
-            ).write_file(path)
-
-            metadata.append(
-                {
-                    "database": "MaterialsProject",
-                    "source_id": str(doc.material_id),
-                    "filename": filename,
-                    "formula": doc.formula_pretty,
-                    "elements": ",".join(map(str, doc.elements)),
-                    "space_group": doc.symmetry.symbol,
-                    "crystal_system": doc.symmetry.crystal_system,
-                    "density": doc.density,
-                    "volume": doc.volume,
-                }
-            )
-
-    write_metadata(
-        pd.DataFrame(metadata),
-        output_folder,
-    )
+        print("=" * 60)
+        print("Materials Project Summary")
+        print("=" * 60)
+        print(f"Chemical system : {chemsys}")
+        print(f"Found           : {len(documents)}")
+        print(f"Downloaded      : {downloaded}")
+        print(f"Skipped         : {skipped}")
+        print(f"Failed          : {failed}")
+        print("=" * 60)
 
 
 def download_cod(
@@ -258,28 +314,18 @@ def main():
             output_root=args.output,
         )
 
+        kwargs = {
+            "chemsys": chemsys,
+            "output_folder": output_folder,
+        }
+
         if args.database == "mp":
+            kwargs["api_key"] = args.api_key
 
-            download_materials_project(
-                api_key=args.api_key,
-                chemsys=chemsys,
-                output_folder=output_folder,
-            )
+        if args.database == "optimade":
+            kwargs["provider"] = args.provider
 
-        elif args.database == "cod":
-
-            download_cod(
-                chemsys=chemsys,
-                output_folder=output_folder,
-            )
-
-        elif args.database == "optimade":
-
-            download_optimade(
-                provider=args.provider,
-                chemsys=chemsys,
-                output_folder=output_folder,
-            )
+        DOWNLOADERS[args.database](**kwargs)
 
         print(f"Finished {chemsys}")
 
