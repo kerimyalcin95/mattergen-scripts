@@ -120,95 +120,75 @@ def download_materials_project(
     output_folder: Path,
 ):
     """
-    Download all structures of a chemical system from
-    the Materials Project.
+    Download all structures for a chemical system from the
+    Materials Project.
     """
 
-    if api_key is None:
+    if not api_key:
         raise RuntimeError(
             "Materials Project requires --api-key."
         )
 
     metadata = []
 
+    downloaded = 0
+    skipped = 0
+    failed = 0
+
     print("Connecting to Materials Project...")
 
     with MPRester(api_key) as mpr:
 
-        documents = list(
-            mpr.materials.summary.search(
-                chemsys=chemsys,
-                fields=[
-                    "material_id",
-                    "formula_pretty",
-                    "structure",
-                    "symmetry",
-                    "density",
-                    "volume",
-                    "elements",
-                ],
-            )
+        documents = mpr.materials.summary.search(
+            chemsys=chemsys,
+            fields=[
+                "material_id",
+                "formula_pretty",
+                "structure",
+                "symmetry",
+                "density",
+                "volume",
+                "elements",
+            ],
         )
-
-        print(f"Found {len(documents)} structures.")
-
-        failed = 0
-        skipped = 0
-        downloaded = 0
 
         for document in tqdm(
             documents,
-            desc=f"Downloading {chemsys}",
+            desc=f"{chemsys}",
         ):
+
+            filename = f"{document.material_id}.cif"
+            filepath = output_folder / filename
 
             try:
 
-                structure = document.structure
-
-                filename = f"{document.material_id}.cif"
-
-                path = output_folder / filename
-
-                if path.exists():
-
+                if filepath.exists():
                     skipped += 1
+                else:
 
-                    metadata.append(
-                        {
-                            "database": "MaterialsProject",
-                            "source_id": str(document.material_id),
-                            "filename": filename,
-                            "formula": document.formula_pretty,
-                            "elements": ",".join(
-                                map(str, document.elements)
-                            ),
-                            "space_group": document.symmetry.symbol,
-                            "crystal_system": document.symmetry.crystal_system,
-                            "density": document.density,
-                            "volume": document.volume,
-                        }
+                    save_structure(
+                        document.structure,
+                        filepath,
                     )
 
-                    continue
+                    downloaded += 1
 
-                save_structure(
-                    structure,
-                    path,
-                )
-
-                downloaded += 1
+                symmetry = document.symmetry
 
                 metadata.append(
                     {
                         "database": "MaterialsProject",
+                        "chemsys": chemsys,
                         "source_id": str(document.material_id),
                         "filename": filename,
                         "formula": document.formula_pretty,
                         "elements": ",".join(
                             map(str, document.elements)
                         ),
-                        "space_group": document.symmetry.symbol,
-                        "crystal_system": document.symmetry.crystal_system,
+                        "num_sites": len(document.structure),
+                        "space_group": symmetry.symbol,
+                        "space_group_number": symmetry.number,
+                        "crystal_system": symmetry.crystal_system,
                         "density": document.density,
                         "volume": document.volume,
                     }
@@ -219,26 +199,32 @@ def download_materials_project(
                 failed += 1
 
                 print(
-                    f"Failed to download "
-                    f"{document.material_id}: {exception}"
+                    f"Failed {document.material_id}: "
+                    f"{exception}"
                 )
 
-        write_metadata(
-            pd.DataFrame(metadata),
-            output_folder,
-        )
+    metadata_df = pd.DataFrame(metadata)
 
-        print()
+    metadata_df.sort_values(
+        by="source_id",
+        inplace=True,
+    )
 
-        print("=" * 60)
-        print("Materials Project Summary")
-        print("=" * 60)
-        print(f"Chemical system : {chemsys}")
-        print(f"Found           : {len(documents)}")
-        print(f"Downloaded      : {downloaded}")
-        print(f"Skipped         : {skipped}")
-        print(f"Failed          : {failed}")
-        print("=" * 60)
+    write_metadata(
+        metadata_df,
+        output_folder,
+    )
+
+    print()
+    print("=" * 70)
+    print("Materials Project Download Summary")
+    print("=" * 70)
+    print(f"Chemical system : {chemsys}")
+    print(f"Downloaded      : {downloaded}")
+    print(f"Skipped         : {skipped}")
+    print(f"Failed          : {failed}")
+    print(f"Metadata rows   : {len(metadata_df)}")
+    print("=" * 70)
 
 
 def download_cod(
@@ -293,6 +279,31 @@ DOWNLOADERS = {
     "cod": download_cod,
     "optimade": download_optimade,
 }
+
+
+def create_metadata_row(
+    database: str,
+    source_id: str,
+    filename: str,
+    formula: str,
+    elements,
+    space_group: str,
+    crystal_system: str,
+    density: float,
+    volume: float,
+) -> dict:
+
+    return {
+        "database": database,
+        "source_id": source_id,
+        "filename": filename,
+        "formula": formula,
+        "elements": ",".join(map(str, elements)),
+        "space_group": space_group,
+        "crystal_system": crystal_system,
+        "density": density,
+        "volume": volume,
+    }
 
 
 def main():
