@@ -29,6 +29,11 @@ The goal of this project is to evaluate the quality, realism, diversity, and nov
       - [Symmetry: Computed Properties](#symmetry-computed-properties)
       - [Symmetry Output](#symmetry-output)
       - [Symmetry Example](#symmetry-example)
+    - [03\_coordination\_analysis.py](#03_coordination_analysispy)
+      - [Coordination Features](#coordination-features)
+      - [Coordination: Computed Properties](#coordination-computed-properties)
+      - [Coordination Output](#coordination-output)
+      - [Coordination Example](#coordination-example)
   - [Implemented Analysis Pipeline](#implemented-analysis-pipeline)
   - [Planned Analysis Pipeline](#planned-analysis-pipeline)
   - [Directory Structure](#directory-structure)
@@ -51,6 +56,7 @@ The goal of this project is to evaluate the quality, realism, diversity, and nov
 - Compute structural and crystallographic statistics.
 - Analyze crystallographic symmetry.
 - Determine space groups, crystal systems, point groups, Bravais lattices, and Hall symbols.
+- Analyze local coordination environments using CrystalNN and VoronoiNN.
 - Export CSV summaries.
 - Generate publication-quality PDF and PNG figures.
 - Support parallel processing using all available CPU cores.
@@ -65,6 +71,7 @@ The goal of this project is to evaluate the quality, realism, diversity, and nov
 ├── 00_download_database.py
 ├── 01_basic_statistics.py
 ├── 02_symmetry_analysis.py
+├── 03_coordination_analysis.py
 ├── downloaders/
 │   ├── __init__.py
 │   ├── alexandria.py
@@ -318,6 +325,74 @@ python 02_symmetry_analysis.py \
 
 ---
 
+### 03_coordination_analysis.py
+
+Analyzes local coordination environments of crystal structure datasets using both CrystalNN and VoronoiNN.
+
+#### Coordination Features
+
+- Analyze CIF, XYZ, and EXTXYZ crystal structures
+- Compute local coordination using CrystalNN
+- Compute local coordination using VoronoiNN
+- Compare coordination assignments from both methods
+- Compute per-structure coordination statistics
+- Export CSV summaries
+- Generate publication-quality PDF and PNG figures
+- Support parallel processing
+
+#### Coordination: Computed Properties
+
+For every structure:
+
+- Mean CrystalNN coordination number
+- Median CrystalNN coordination number
+- Standard deviation of CrystalNN coordination
+- Minimum CrystalNN coordination
+- Maximum CrystalNN coordination
+- Mean VoronoiNN coordination number
+- Median VoronoiNN coordination number
+- Standard deviation of VoronoiNN coordination
+- Minimum VoronoiNN coordination
+- Maximum VoronoiNN coordination
+- Mean absolute coordination difference
+- Maximum absolute coordination difference
+- Agreement fraction between both methods
+- Structure validity
+
+#### Coordination Output
+
+Results are written to a dedicated `coordination` directory.
+
+```text
+results/
+└── <database>/
+    └── <chemical-system>/
+        └── coordination/
+            ├── coordination_analysis.csv
+            ├── summary.csv
+            ├── failed_files.csv
+            ├── agreement_fraction_histogram.pdf
+            ├── agreement_fraction_histogram.png
+            ├── composition_distribution.pdf
+            ├── composition_distribution.png
+            ├── coordination_boxplot.pdf
+            ├── coordination_boxplot.png
+            ├── coordination_difference_histogram.pdf
+            ├── coordination_difference_histogram.png
+            ├── coordination_scatter.pdf
+            ├── coordination_scatter.png
+            ├── crystalnn_coordination_histogram.pdf
+            ├── crystalnn_coordination_histogram.png
+            ├── voronoi_coordination_histogram.pdf
+            └── voronoi_coordination_histogram.png
+```
+
+#### Coordination Example
+
+```bash
+python 03_coordination_analysis.py     --input ../../data/MaterialsProject/Al-O     --output ../../results/MaterialsProject/Al-O     --workers -1
+```
+
 ## Implemented Analysis Pipeline
 
 | Script | Analysis |
@@ -325,6 +400,7 @@ python 02_symmetry_analysis.py \
 | 00_download_database.py | Download reference datasets |
 | 01_basic_statistics.py | Basic structural statistics |
 | 02_symmetry_analysis.py | Space groups, crystal systems, Bravais lattices, point groups, Hall symbols, and symmetry operations |
+| 03_coordination_analysis.py | CrystalNN and VoronoiNN coordination environments, agreement metrics, and coordination statistics |
 
 ---
 
@@ -332,14 +408,9 @@ python 02_symmetry_analysis.py \
 
 | Script | Analysis |
 | ------ | -------- |
-| 03_coordination_analysis.py | CrystalNN and VoronoiNN coordination |
 | 04_bond_analysis.py | Bond lengths, bond angles, nearest neighbors |
 | 05_rdf_analysis.py | Radial distribution functions (RDF) |
-| 06_chemical_analysis.py | Oxidation states and charge neutrality |
-| 07_fingerprint_analysis.py | Crystal fingerprints |
-| 08_novelty_analysis.py | Duplicate detection and structural similarity |
-| 09_distribution_comparison.py | Statistical comparison between datasets |
-| 10_stability_analysis.py | Formation energy, energy above hull, band gap and stability metrics |
+| 06_stability_analysis.py | Formation energy, energy above hull, band gap and stability metrics |
 
 ---
 
@@ -363,7 +434,8 @@ results/
 ├── MatterGen/
 │   └── Al-O/
 │       ├── basic_statistics/
-│       └── symmetry/
+│       ├── symmetry/
+│       └── coordination/
 ├── MaterialsProject/
 ├── COD/
 ├── OQMD/
@@ -380,8 +452,9 @@ results/
 3. Run the implemented analysis pipeline on every dataset.
 4. Compare structural statistics.
 5. Compare crystallographic symmetry.
-6. Continue with the remaining planned analyses.
-7. Determine whether MatterGen generates realistic crystal structures.
+6. Compare local coordination environments.
+7. Continue with the remaining planned analyses.
+8. Determine whether MatterGen generates realistic crystal structures.
 
 ---
 
