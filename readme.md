@@ -1,3 +1,5 @@
+.\README.md
+````markdown
 # MatterGen Scripts
 
 A collection of Python scripts for downloading, analyzing, and benchmarking crystal structure datasets from MatterGen and established materials databases.
@@ -16,24 +18,29 @@ The goal of this project is to evaluate the quality, realism, diversity, and nov
   - [Installation](#installation)
   - [Materials Project API Key](#materials-project-api-key)
   - [Scripts](#scripts)
-    - [00\_download\_database.py](#00_download_databasepy)
+    - [00_download_database.py](#00_download_databasepy)
       - [Download Features](#download-features)
       - [Download Example](#download-example)
-    - [01\_basic\_statistics.py](#01_basic_statisticspy)
+    - [01_basic_statistics.py](#01_basic_statisticspy)
       - [Supported File Formats](#supported-file-formats)
       - [Computed Properties](#computed-properties)
       - [Statistics Output](#statistics-output)
       - [Statistics Example](#statistics-example)
-    - [02\_symmetry\_analysis.py](#02_symmetry_analysispy)
+    - [02_symmetry_analysis.py](#02_symmetry_analysispy)
       - [Symmetry Features](#symmetry-features)
       - [Symmetry: Computed Properties](#symmetry-computed-properties)
       - [Symmetry Output](#symmetry-output)
       - [Symmetry Example](#symmetry-example)
-    - [03\_coordination\_analysis.py](#03_coordination_analysispy)
+    - [03_coordination_analysis.py](#03_coordination_analysispy)
       - [Coordination Features](#coordination-features)
       - [Coordination: Computed Properties](#coordination-computed-properties)
       - [Coordination Output](#coordination-output)
       - [Coordination Example](#coordination-example)
+    - [04_bond_analysis.py](#04_bond_analysispy)
+      - [Bond Features](#bond-features)
+      - [Bond: Computed Properties](#bond-computed-properties)
+      - [Bond Output](#bond-output)
+      - [Bond Example](#bond-example)
   - [Implemented Analysis Pipeline](#implemented-analysis-pipeline)
   - [Planned Analysis Pipeline](#planned-analysis-pipeline)
   - [Directory Structure](#directory-structure)
@@ -72,6 +79,7 @@ The goal of this project is to evaluate the quality, realism, diversity, and nov
 ├── 01_basic_statistics.py
 ├── 02_symmetry_analysis.py
 ├── 03_coordination_analysis.py
+├── 04_bond_analysis.py
 ├── downloaders/
 │   ├── __init__.py
 │   ├── alexandria.py
@@ -115,7 +123,6 @@ Clone the repository:
 
 ```bash
 git clone https://github.com/<username>/mattergen-scripts.git
-
 cd mattergen-scripts
 ```
 
@@ -367,7 +374,8 @@ Results are written to a dedicated `coordination` directory.
 results/
 └── <database>/
     └── <chemical-system>/
-        └── coordination/
+        ├── coordination/
+│       └── bond/
             ├── coordination_analysis.csv
             ├── summary.csv
             ├── failed_files.csv
@@ -390,7 +398,70 @@ results/
 #### Coordination Example
 
 ```bash
-python 03_coordination_analysis.py     --input ../../data/MaterialsProject/Al-O     --output ../../results/MaterialsProject/Al-O     --workers -1
+python 03_coordination_analysis.py \
+    --input ../../data/MaterialsProject/Al-O \
+    --output ../../results/MaterialsProject/Al-O \
+    --workers -1
+```
+
+### 04_bond_analysis.py
+
+Analyzes bond lengths, bond angles, nearest-neighbor distances, and coordination statistics.
+
+#### Bond Features
+
+- Analyze CIF, XYZ, and EXTXYZ crystal structures
+- Compute bond lengths using CrystalNN
+- Compute bond angles
+- Compute nearest-neighbor distances
+- Compute coordination statistics
+- Export CSV summaries
+- Generate publication-quality PDF and PNG figures
+- Support parallel processing
+
+#### Bond: Computed Properties
+
+For every structure:
+
+- Mean, median, standard deviation, minimum, and maximum bond length
+- Mean, median, standard deviation, minimum, and maximum bond angle
+- Mean, median, standard deviation, minimum, and maximum nearest-neighbor distance
+- Mean, median, standard deviation, minimum, and maximum coordination number
+- Number of bonds
+- Number of bond angles
+- Structure validity
+
+#### Bond Output
+
+Results are written to a dedicated `bond` directory.
+
+```text
+results/
+└── <database>/
+    └── <chemical-system>/
+        └── bond/
+            ├── bond_analysis.csv
+            ├── summary.csv
+            ├── failed_files.csv
+            ├── bond_length_histogram.pdf
+            ├── bond_length_histogram.png
+            ├── bond_angle_histogram.pdf
+            ├── bond_angle_histogram.png
+            ├── nearest_neighbor_histogram.pdf
+            ├── nearest_neighbor_histogram.png
+            ├── coordination_histogram.pdf
+            ├── coordination_histogram.png
+            ├── bond_statistics_boxplot.pdf
+            └── bond_statistics_boxplot.png
+```
+
+#### Bond Example
+
+```bash
+python 04_bond_analysis.py \
+    --input ../../data/MaterialsProject/Al-O \
+    --output ../../results/MaterialsProject/Al-O \
+    --workers -1
 ```
 
 ## Implemented Analysis Pipeline
@@ -401,6 +472,7 @@ python 03_coordination_analysis.py     --input ../../data/MaterialsProject/Al-O 
 | 01_basic_statistics.py | Basic structural statistics |
 | 02_symmetry_analysis.py | Space groups, crystal systems, Bravais lattices, point groups, Hall symbols, and symmetry operations |
 | 03_coordination_analysis.py | CrystalNN and VoronoiNN coordination environments, agreement metrics, and coordination statistics |
+| 04_bond_analysis.py | Bond lengths, bond angles, nearest-neighbor statistics, and coordination statistics |
 
 ---
 
@@ -408,7 +480,6 @@ python 03_coordination_analysis.py     --input ../../data/MaterialsProject/Al-O 
 
 | Script | Analysis |
 | ------ | -------- |
-| 04_bond_analysis.py | Bond lengths, bond angles, nearest neighbors |
 | 05_rdf_analysis.py | Radial distribution functions (RDF) |
 | 06_stability_analysis.py | Formation energy, energy above hull, band gap and stability metrics |
 
@@ -435,7 +506,8 @@ results/
 │   └── Al-O/
 │       ├── basic_statistics/
 │       ├── symmetry/
-│       └── coordination/
+│       ├── coordination/
+│       └── bond/
 ├── MaterialsProject/
 ├── COD/
 ├── OQMD/
@@ -454,7 +526,7 @@ results/
 5. Compare crystallographic symmetry.
 6. Compare local coordination environments.
 7. Continue with the remaining planned analyses.
-8. Determine whether MatterGen generates realistic crystal structures.
+8. Determine whether MatterGen generates physically meaningful, chemically realistic, and structurally diverse crystal structures compared with established experimental and computational materials databases.
 
 ---
 
@@ -475,28 +547,16 @@ results/
 The benchmark aims to compare:
 
 - Chemical composition
-- Crystal symmetry
-- Space group distributions
-- Crystal system distributions
-- Point group distributions
-- Bravais lattices
-- Hall symbols
-- Symmetry operations
-- Lattice parameters
-- Density
-- Cell volume
+- Crystal structure statistics
+- Crystallographic symmetry
 - Coordination environments
-- Bond lengths
-- Bond angles
+- Bond geometry
 - Radial distribution functions (RDF)
 - Crystal fingerprints
 - Structural similarity
 - Novelty
 - Dataset similarity
-- Formation energy
-- Energy above hull
-- Band gap
-- Stability metrics
+- Electronic structure and stability
 
 The objective is to determine whether MatterGen generates physically meaningful, chemically realistic, and structurally diverse crystal structures compared with established experimental and computational materials databases.
 
@@ -505,3 +565,5 @@ The objective is to determine whether MatterGen generates physically meaningful,
 ## License
 
 This project is licensed under the **MIT License**.
+
+````

@@ -1656,6 +1656,438 @@
                 "cwd": "${workspaceFolder}"
             },
             "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - MatterGen - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/MatterGen/Al-O/generated_crystals_cif",
+                "--output",
+                "../../results/MatterGen/Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - MatterGen - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/MatterGen/Fe-O/generated_crystals_cif",
+                "--output",
+                "../../results/MatterGen/Fe-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - MatterGen - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/MatterGen/Ti-O/generated_crystals_cif",
+                "--output",
+                "../../results/MatterGen/Ti-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - MatterGen - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/MatterGen/Y-Al-O/generated_crystals_cif",
+                "--output",
+                "../../results/MatterGen/Y-Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - MaterialsProject - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/MaterialsProject/Al-O",
+                "--output",
+                "../../results/MaterialsProject/Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - MaterialsProject - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/MaterialsProject/Fe-O",
+                "--output",
+                "../../results/MaterialsProject/Fe-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - MaterialsProject - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/MaterialsProject/Ti-O",
+                "--output",
+                "../../results/MaterialsProject/Ti-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - MaterialsProject - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/MaterialsProject/Y-Al-O",
+                "--output",
+                "../../results/MaterialsProject/Y-Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - OQMD - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/OQMD/Al-O",
+                "--output",
+                "../../results/OQMD/Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - OQMD - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/OQMD/Fe-O",
+                "--output",
+                "../../results/OQMD/Fe-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - OQMD - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/OQMD/Ti-O",
+                "--output",
+                "../../results/OQMD/Ti-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - OQMD - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/OQMD/Y-Al-O",
+                "--output",
+                "../../results/OQMD/Y-Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - JARVIS - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/JARVIS/Al-O",
+                "--output",
+                "../../results/JARVIS/Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - JARVIS - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/JARVIS/Fe-O",
+                "--output",
+                "../../results/JARVIS/Fe-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - JARVIS - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/JARVIS/Ti-O",
+                "--output",
+                "../../results/JARVIS/Ti-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - JARVIS - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/JARVIS/Y-Al-O",
+                "--output",
+                "../../results/JARVIS/Y-Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - Alexandria - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/Alexandria/Al-O",
+                "--output",
+                "../../results/Alexandria/Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - Alexandria - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/Alexandria/Fe-O",
+                "--output",
+                "../../results/Alexandria/Fe-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - Alexandria - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/Alexandria/Ti-O",
+                "--output",
+                "../../results/Alexandria/Ti-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - Alexandria - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/Alexandria/Y-Al-O",
+                "--output",
+                "../../results/Alexandria/Y-Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - COD - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/COD/Al-O",
+                "--output",
+                "../../results/COD/Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - COD - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/COD/Fe-O",
+                "--output",
+                "../../results/COD/Fe-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - COD - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/COD/Ti-O",
+                "--output",
+                "../../results/COD/Ti-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Bond Analysis - COD - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "04_bond_analysis.py",
+                "--input",
+                "../../data/COD/Y-Al-O",
+                "--output",
+                "../../results/COD/Y-Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
         }
     ]
 }
