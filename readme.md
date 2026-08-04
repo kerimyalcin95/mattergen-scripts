@@ -1,5 +1,3 @@
-.\README.md
-````markdown
 # MatterGen Scripts
 
 A collection of Python scripts for downloading, analyzing, and benchmarking crystal structure datasets from MatterGen and established materials databases.
@@ -18,25 +16,25 @@ The goal of this project is to evaluate the quality, realism, diversity, and nov
   - [Installation](#installation)
   - [Materials Project API Key](#materials-project-api-key)
   - [Scripts](#scripts)
-    - [00_download_database.py](#00_download_databasepy)
+    - [00\_download\_database.py](#00_download_databasepy)
       - [Download Features](#download-features)
       - [Download Example](#download-example)
-    - [01_basic_statistics.py](#01_basic_statisticspy)
+    - [01\_basic\_statistics.py](#01_basic_statisticspy)
       - [Supported File Formats](#supported-file-formats)
       - [Computed Properties](#computed-properties)
       - [Statistics Output](#statistics-output)
       - [Statistics Example](#statistics-example)
-    - [02_symmetry_analysis.py](#02_symmetry_analysispy)
+    - [02\_symmetry\_analysis.py](#02_symmetry_analysispy)
       - [Symmetry Features](#symmetry-features)
       - [Symmetry: Computed Properties](#symmetry-computed-properties)
       - [Symmetry Output](#symmetry-output)
       - [Symmetry Example](#symmetry-example)
-    - [03_coordination_analysis.py](#03_coordination_analysispy)
+    - [03\_coordination\_analysis.py](#03_coordination_analysispy)
       - [Coordination Features](#coordination-features)
       - [Coordination: Computed Properties](#coordination-computed-properties)
       - [Coordination Output](#coordination-output)
       - [Coordination Example](#coordination-example)
-    - [04_bond_analysis.py](#04_bond_analysispy)
+    - [04\_bond\_analysis.py](#04_bond_analysispy)
       - [Bond Features](#bond-features)
       - [Bond: Computed Properties](#bond-computed-properties)
       - [Bond Output](#bond-output)
@@ -565,5 +563,3 @@ The objective is to determine whether MatterGen generates physically meaningful,
 ## License
 
 This project is licensed under the **MIT License**.
-
-````
