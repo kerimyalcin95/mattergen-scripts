@@ -24,6 +24,12 @@ The goal of this project is to evaluate the quality, realism, diversity, and nov
       - [Computed Properties](#computed-properties)
       - [Statistics Output](#statistics-output)
       - [Statistics Example](#statistics-example)
+    - [02\_symmetry\_analysis.py](#02_symmetry_analysispy)
+      - [Symmetry Features](#symmetry-features)
+      - [Symmetry: Computed Properties](#symmetry-computed-properties)
+      - [Symmetry Output](#symmetry-output)
+      - [Symmetry Example](#symmetry-example)
+  - [Implemented Analysis Pipeline](#implemented-analysis-pipeline)
   - [Planned Analysis Pipeline](#planned-analysis-pipeline)
   - [Directory Structure](#directory-structure)
   - [Typical Workflow](#typical-workflow)
@@ -43,6 +49,8 @@ The goal of this project is to evaluate the quality, realism, diversity, and nov
 - Skip already downloaded structures.
 - Analyze CIF, XYZ, and EXTXYZ crystal structures.
 - Compute structural and crystallographic statistics.
+- Analyze crystallographic symmetry.
+- Determine space groups, crystal systems, point groups, Bravais lattices, and Hall symbols.
 - Export CSV summaries.
 - Generate publication-quality PDF and PNG figures.
 - Support parallel processing using all available CPU cores.
@@ -56,6 +64,7 @@ The goal of this project is to evaluate the quality, realism, diversity, and nov
 .
 ├── 00_download_database.py
 ├── 01_basic_statistics.py
+├── 02_symmetry_analysis.py
 ├── downloaders/
 │   ├── __init__.py
 │   ├── alexandria.py
@@ -209,20 +218,33 @@ For every structure:
 - Cell volume
 - Density
 - Space group
-- Crystal system
 - Structure validity
 
 #### Statistics Output
 
-- `basic_statistics.csv`
-- `summary.csv`
-- `failed_files.csv`
-- Density histogram
-- Volume histogram
-- Number of atoms histogram
-- Lattice parameter distributions
-- Space group distribution
-- Composition distribution
+Results are written to a dedicated `basic_statistics` directory.
+
+```text
+results/
+└── <database>/
+    └── <chemical-system>/
+        └── basic_statistics/
+            ├── basic_statistics.csv
+            ├── summary.csv
+            ├── failed_files.csv
+            ├── composition_distribution.pdf
+            ├── composition_distribution.png
+            ├── density_histogram.pdf
+            ├── density_histogram.png
+            ├── lattice_parameters.pdf
+            ├── lattice_parameters.png
+            ├── num_atoms_histogram.pdf
+            ├── num_atoms_histogram.png
+            ├── spacegroup_distribution.pdf
+            ├── spacegroup_distribution.png
+            ├── volume_histogram.pdf
+            └── volume_histogram.png
+```
 
 #### Statistics Example
 
@@ -235,13 +257,81 @@ python 01_basic_statistics.py \
 
 ---
 
-## Planned Analysis Pipeline
+### 02_symmetry_analysis.py
+
+Analyzes the crystallographic symmetry of crystal structure datasets.
+
+#### Symmetry Features
+
+- Analyze CIF, XYZ, and EXTXYZ crystal structures
+- Determine crystallographic symmetry using `SpacegroupAnalyzer`
+- Compute one symmetry analysis per structure
+- Export CSV summaries
+- Generate publication-quality PDF and PNG figures
+- Support parallel processing
+
+#### Symmetry: Computed Properties
+
+For every structure:
+
+- Space group number
+- Space group symbol
+- Crystal system
+- Bravais lattice
+- Point group
+- Hall symbol
+- Number of symmetry operations
+- Structure validity
+
+#### Symmetry Output
+
+Results are written to a dedicated `symmetry` directory.
+
+```text
+results/
+└── <database>/
+    └── <chemical-system>/
+        └── symmetry/
+            ├── symmetry_analysis.csv
+            ├── summary.csv
+            ├── failed_files.csv
+            ├── crystal_system_distribution.pdf
+            ├── crystal_system_distribution.png
+            ├── point_group_distribution.pdf
+            ├── point_group_distribution.png
+            ├── space_group_distribution.pdf
+            ├── space_group_distribution.png
+            ├── space_group_number_histogram.pdf
+            ├── space_group_number_histogram.png
+            ├── symmetry_operations_histogram.pdf
+            └── symmetry_operations_histogram.png
+```
+
+#### Symmetry Example
+
+```bash
+python 02_symmetry_analysis.py \
+    --input ../../data/MaterialsProject/Al-O \
+    --output ../../results/MaterialsProject/Al-O \
+    --workers -1
+```
+
+---
+
+## Implemented Analysis Pipeline
 
 | Script | Analysis |
 | ------ | -------- |
 | 00_download_database.py | Download reference datasets |
 | 01_basic_statistics.py | Basic structural statistics |
-| 02_symmetry_analysis.py | Space groups and crystal systems |
+| 02_symmetry_analysis.py | Space groups, crystal systems, Bravais lattices, point groups, Hall symbols, and symmetry operations |
+
+---
+
+## Planned Analysis Pipeline
+
+| Script | Analysis |
+| ------ | -------- |
 | 03_coordination_analysis.py | CrystalNN and VoronoiNN coordination |
 | 04_bond_analysis.py | Bond lengths, bond angles, nearest neighbors |
 | 05_rdf_analysis.py | Radial distribution functions (RDF) |
@@ -263,13 +353,7 @@ data/
 │   ├── Fe-O/
 │   ├── Ti-O/
 │   └── Y-Al-O/
-│
 ├── MaterialsProject/
-│   ├── Al-O/
-│   ├── Fe-O/
-│   ├── Ti-O/
-│   └── Y-Al-O/
-│
 ├── COD/
 ├── OQMD/
 ├── JARVIS/
@@ -277,6 +361,9 @@ data/
 
 results/
 ├── MatterGen/
+│   └── Al-O/
+│       ├── basic_statistics/
+│       └── symmetry/
 ├── MaterialsProject/
 ├── COD/
 ├── OQMD/
@@ -290,14 +377,11 @@ results/
 
 1. Download reference crystal structures from one or more databases.
 2. Generate crystal structures with MatterGen.
-3. Run the same analysis pipeline on every dataset.
-4. Compare statistical distributions.
-5. Compare crystal symmetry distributions.
-6. Compare local atomic environments.
-7. Compare bond geometry and RDFs.
-8. Evaluate novelty and structural diversity.
-9. Compare stability-related properties where available.
-10. Determine whether MatterGen generates realistic crystal structures.
+3. Run the implemented analysis pipeline on every dataset.
+4. Compare structural statistics.
+5. Compare crystallographic symmetry.
+6. Continue with the remaining planned analyses.
+7. Determine whether MatterGen generates realistic crystal structures.
 
 ---
 
@@ -315,11 +399,16 @@ results/
 
 ## Roadmap
 
-The planned benchmark will compare:
+The benchmark aims to compare:
 
 - Chemical composition
 - Crystal symmetry
 - Space group distributions
+- Crystal system distributions
+- Point group distributions
+- Bravais lattices
+- Hall symbols
+- Symmetry operations
 - Lattice parameters
 - Density
 - Cell volume
