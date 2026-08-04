@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Basic Statistics",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/generated_structures",
+                "--output",
+                "../../data/results",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
