@@ -97,7 +97,7 @@ Together, RDF and fingerprint analysis provide complementary views of structural
     - [Required Packages](#required-packages)
   - [Installation](#installation)
   - [Project Structure](#project-structure)
-  - [Dataset Directory Structure](#dataset-directory-structure)
+  - [Example Dataset Directory Structure](#example-dataset-directory-structure)
   - [Output Directory Structure](#output-directory-structure)
   - [Supported Databases](#supported-databases)
   - [Supported File Formats](#supported-file-formats)
@@ -264,7 +264,7 @@ The scripts are intentionally independent, allowing individual analyses to be ex
 
 ---
 
-## Dataset Directory Structure
+## Example Dataset Directory Structure
 
 The benchmark expects the following directory layout.
 
@@ -436,7 +436,7 @@ The benchmark is organized into independent analysis modules. Each module focuse
 
 | Script | Analysis | Output Directory |
 | ---------- | ---------- | ------------------ |
-| `01_composition_analysis.py` | Chemical composition statistics | `composition/` |
+| `01_composition_analysis.py` | Chemical composition statistics | `<chemical-system>/` |
 | `02_symmetry_analysis.py` | Crystallographic symmetry | `symmetry/` |
 | `03_coordination_analysis.py` | Local coordination environments | `coordination/` |
 | `04_bond_analysis.py` | Bond lengths and bond angles | `bond/` |
