@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from datetime import datetime
 
 import pandas as pd
 from tqdm import tqdm
@@ -30,6 +29,12 @@ from pymatgen.io.cif import CifWriter
 
 # Materials Project
 from mp_api.client import MPRester
+
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 DATABASES = {
     "mp": "MaterialsProject",
@@ -67,8 +72,8 @@ def parse_arguments():
 
     parser.add_argument(
         "--api-key",
-        default=None,
-        help="Materials Project API key."
+        default=os.getenv("MP_API_KEY"),
+        help="Defaults to MP_API_KEY from .env",
     )
 
     parser.add_argument(

@@ -2,6 +2,24 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Download MaterialsProject - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "mp",
+                "--chemsys",
+                "Al-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "Run Basic Statistics - Al-O",
             "type": "shell",
             "command": "python",
