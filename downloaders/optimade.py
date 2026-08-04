@@ -57,7 +57,10 @@ class OPTIMADEDownloader(BaseDownloader):
             for element in elements
         )
 
-        return f"elements HAS ALL {quoted}"
+        return (
+            f"elements HAS ALL {quoted} "
+            f"AND nelements<={len(elements)}"
+        )
 
     def iter_entries(
         self,
@@ -216,7 +219,7 @@ class OPTIMADEDownloader(BaseDownloader):
             print(f"{self.database_name} download failed")
             print("=" * 70)
             print(exception)
-            print("=" * 70) 
+            print("=" * 70)
 
         metadata_df = pd.DataFrame(metadata)
 
