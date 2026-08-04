@@ -18,7 +18,12 @@ class MaterialsProjectDownloader(BaseDownloader):
 
     database_name = "MaterialsProject"
 
-    def __init__(self, api_key: str):
+    def __init__(
+        self,
+        api_key: str | None = None,
+        **kwargs,
+    ):
+        super().__init__(**kwargs)
         self.api_key = api_key
 
     def download(

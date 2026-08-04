@@ -6,7 +6,7 @@ class OQMDDownloader(OPTIMADEDownloader):
     database_name = "OQMD"
     provider_name = "oqmd"
 
-    BASE_URL = "https://oqmd.org/optimade/"
+    BASE_URL = "https://oqmd.org/optimade"
 
     def extract_provider_metadata(
         self,
