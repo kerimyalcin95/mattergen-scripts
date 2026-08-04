@@ -20,6 +20,8 @@ python 00_download_database.py \
 from __future__ import annotations
 
 from downloaders.materials_project import MaterialsProjectDownloader
+from downloaders.oqmd import OQMDDownloader
+
 from downloaders.utils import write_metadata
 
 import argparse
@@ -33,6 +35,7 @@ load_dotenv()
 
 DOWNLOADERS = {
     "mp": MaterialsProjectDownloader,
+    "oqmd": OQMDDownloader,
 }
 
 
