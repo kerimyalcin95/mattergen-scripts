@@ -25,8 +25,6 @@ from downloaders.jarvis import JARVISDownloader
 from downloaders.alexandria import AlexandriaDownloader
 from downloaders.cod import CODDownloader
 
-from downloaders.utils import write_metadata
-
 import argparse
 from pathlib import Path
 
@@ -110,14 +108,9 @@ def main():
             output_root=args.output,
         )
 
-        metadata = downloader.download(
+        downloader.download(
             chemsys=chemsys,
             output_folder=output_folder,
-        )
-
-        write_metadata(
-            metadata,
-            output_folder,
         )
 
     print(f"Finished {chemsys}")

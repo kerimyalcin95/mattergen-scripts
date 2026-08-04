@@ -1,4 +1,4 @@
-import pandas as pd
+
 from pathlib import Path
 from abc import ABC, abstractmethod
 
@@ -15,7 +15,7 @@ class BaseDownloader(ABC):
         self,
         chemsys: str,
         output_folder: Path,
-    ) -> pd.DataFrame:
+    ) -> None:
         pass
 
     def create_output_folder(

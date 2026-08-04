@@ -1,8 +1,7 @@
 from .base import BaseDownloader
-from .utils import save_structure, create_metadata_row
+from .utils import save_structure
 
 from pathlib import Path
-import pandas as pd
 from tqdm import tqdm
 
 # Materials Project
@@ -26,7 +25,7 @@ class MaterialsProjectDownloader(BaseDownloader):
         self,
         chemsys: str,
         output_folder: Path,
-    ) -> pd.DataFrame:
+    ) -> None:
         """
         Download all structures for a chemical system from the
         Materials Project.
@@ -36,8 +35,6 @@ class MaterialsProjectDownloader(BaseDownloader):
             raise RuntimeError(
                 "Materials Project requires --api-key."
             )
-
-        metadata = []
 
         downloaded = 0
         skipped = 0
@@ -84,27 +81,6 @@ class MaterialsProjectDownloader(BaseDownloader):
 
                         downloaded += 1
 
-                    metadata.append(
-                        create_metadata_row(
-                            database="MaterialsProject",
-                            chemsys=chemsys,
-                            source_id=str(document.material_id),
-                            filename=filename,
-                            structure=document.structure,
-                            formula=document.formula_pretty,
-                            elements=document.elements,
-                            space_group=document.symmetry.symbol,
-                            space_group_number=document.symmetry.number,
-                            crystal_system=document.symmetry.crystal_system,
-                            density=document.density,
-                            volume=document.volume,
-                            band_gap=getattr(document, "band_gap", None),
-                            energy_above_hull=getattr(
-                                document, "energy_above_hull", None),
-                            is_stable=getattr(document, "is_stable", None),
-                        )
-                    )
-
                 except Exception as exception:
 
                     failed += 1
@@ -114,13 +90,6 @@ class MaterialsProjectDownloader(BaseDownloader):
                         f"{exception}"
                     )
 
-        metadata_df = pd.DataFrame(metadata)
-
-        metadata_df.sort_values(
-            by="source_id",
-            inplace=True,
-        )
-
         print()
         print("=" * 70)
         print("Materials Project Download Summary")
@@ -129,7 +98,4 @@ class MaterialsProjectDownloader(BaseDownloader):
         print(f"Downloaded      : {downloaded}")
         print(f"Skipped         : {skipped}")
         print(f"Failed          : {failed}")
-        print(f"Metadata rows   : {len(metadata_df)}")
         print("=" * 70)
-
-        return metadata_df

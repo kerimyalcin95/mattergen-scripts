@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-
-import pandas as pd
 import requests
 
 from pymatgen.core import (
@@ -14,7 +12,6 @@ from tqdm import tqdm
 
 from .base import BaseDownloader
 from .utils import (
-    create_metadata_row,
     save_structure,
 )
 
@@ -95,7 +92,13 @@ class OPTIMADEDownloader(BaseDownloader):
                 timeout=120,
             )
 
-            response.raise_for_status()
+            if response.status_code != 200:
+                print(
+                    f""
+                    f"{self.database_name} returned "
+                    f"{response.status_code}: {response.url}"
+                )
+                return
 
             payload = response.json()
 
@@ -211,9 +214,7 @@ class OPTIMADEDownloader(BaseDownloader):
         self,
         chemsys: str,
         output_folder: Path,
-    ) -> pd.DataFrame:
-
-        metadata = []
+    ) -> None:
 
         downloaded = 0
         skipped = 0
@@ -267,26 +268,6 @@ class OPTIMADEDownloader(BaseDownloader):
 
                     downloaded += 1
 
-                metadata.append(
-                    create_metadata_row(
-                        database=self.database_name,
-                        chemsys=chemsys,
-                        source_id=entry["id"],
-                        filename=filename,
-                        structure=structure,
-                        formula=attributes.get(
-                            "chemical_formula_reduced"
-                        ),
-                        elements=attributes.get(
-                            "elements",
-                            [],
-                        ),
-                        **self.extract_provider_metadata(
-                            attributes
-                        ),
-                    )
-                )
-
             except Exception as exception:
 
                 failed += 1
@@ -296,17 +277,6 @@ class OPTIMADEDownloader(BaseDownloader):
                     f"{entry.get('id')}: "
                     f"{exception}"
                 )
-
-        metadata = pd.DataFrame(
-            metadata
-        )
-
-        if not metadata.empty:
-
-            metadata.sort_values(
-                "source_id",
-                inplace=True,
-            )
 
         print()
         print("=" * 70)
@@ -326,9 +296,4 @@ class OPTIMADEDownloader(BaseDownloader):
         print(
             f"Failed          : {failed}"
         )
-        print(
-            f"Metadata rows   : {len(metadata)}"
-        )
         print("=" * 70)
-
-        return metadata
