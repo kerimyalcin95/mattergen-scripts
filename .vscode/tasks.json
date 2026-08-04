@@ -74,6 +74,78 @@
             "problemMatcher": []
         },
         {
+            "label": "Download OQMD - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "oqmd",
+                "--chemsys",
+                "Al-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download OQMD - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "oqmd",
+                "--chemsys",
+                "Fe-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download OQMD - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "oqmd",
+                "--chemsys",
+                "Ti-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download OQMD - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "00_download_database.py",
+                "--database",
+                "oqmd",
+                "--chemsys",
+                "Y-Al-O",
+                "--output",
+                "../../data"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "Run Basic Statistics - MatterGen - Al-O",
             "type": "shell",
             "command": "python",
@@ -209,6 +281,78 @@
                 "../../data/MaterialsProject/Y-Al-O",
                 "--output",
                 "../../results/MaterialsProject/Y-Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - OQMD - Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/OQMD/Al-O",
+                "--output",
+                "../../results/OQMD/Al-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - OQMD - Fe-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/OQMD/Fe-O",
+                "--output",
+                "../../results/OQMD/Fe-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - OQMD - Ti-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/OQMD/Ti-O",
+                "--output",
+                "../../results/OQMD/Ti-O",
+                "--workers",
+                "-1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Basic Statistics - OQMD - Y-Al-O",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "01_basic_statistics.py",
+                "--input",
+                "../../data/OQMD/Y-Al-O",
+                "--output",
+                "../../results/OQMD/Y-Al-O",
                 "--workers",
                 "-1"
             ],

@@ -57,7 +57,7 @@ class OPTIMADEDownloader(BaseDownloader):
             for element in elements
         )
 
-        return f"elements HAS ALL [{quoted}]"
+        return f"elements HAS ALL {quoted}"
 
     def iter_entries(
         self,
@@ -82,7 +82,15 @@ class OPTIMADEDownloader(BaseDownloader):
                 timeout=120,
             )
 
-            response.raise_for_status()
+            try:
+                response.raise_for_status()
+            except requests.HTTPError as exception:
+                raise RuntimeError(
+                    f"{self.database_name} OPTIMADE server returned "
+                    f"{response.status_code}.\n"
+                    f"URL: {response.url}\n"
+                    f"Response:\n{response.text}"
+                ) from exception
 
             payload = response.json()
 
@@ -138,68 +146,77 @@ class OPTIMADEDownloader(BaseDownloader):
         skipped = 0
         failed = 0
 
-        for entry in tqdm(
-            self.iter_entries(chemsys),
-            desc=chemsys,
-        ):
+        try:
+            for entry in tqdm(
+                self.iter_entries(chemsys),
+                desc=chemsys,
+            ):
 
-            try:
+                try:
 
-                attributes = entry["attributes"]
+                    attributes = entry["attributes"]
 
-                if (
-                    attributes.get("lattice_vectors") is None
-                    or attributes.get("cartesian_site_positions") is None
-                ):
-                    continue
+                    if (
+                        attributes.get("lattice_vectors") is None
+                        or attributes.get("cartesian_site_positions") is None
+                    ):
+                        continue
 
-                structure = self.build_structure(
-                    attributes
-                )
-
-                filename = f"{entry['id']}.cif"
-
-                filepath = output_folder / filename
-
-                if filepath.exists():
-                    skipped += 1
-                else:
-                    save_structure(
-                        structure,
-                        filepath,
+                    structure = self.build_structure(
+                        attributes
                     )
-                    downloaded += 1
 
-                provider_metadata = self.extract_provider_metadata(
-                    attributes
-                )
+                    filename = f"{entry['id']}.cif"
 
-                metadata.append(
-                    create_metadata_row(
-                        database=self.database_name,
-                        chemsys=chemsys,
-                        source_id=entry["id"],
-                        filename=filename,
-                        structure=structure,
-                        formula=attributes.get(
-                            "chemical_formula_reduced"
-                        ),
-                        elements=attributes.get(
-                            "elements",
-                            [],
-                        ),
-                        **provider_metadata,
+                    filepath = output_folder / filename
+
+                    if filepath.exists():
+                        skipped += 1
+                    else:
+                        save_structure(
+                            structure,
+                            filepath,
+                        )
+                        downloaded += 1
+
+                    provider_metadata = self.extract_provider_metadata(
+                        attributes
                     )
-                )
 
-            except Exception as exception:
+                    metadata.append(
+                        create_metadata_row(
+                            database=self.database_name,
+                            chemsys=chemsys,
+                            source_id=entry["id"],
+                            filename=filename,
+                            structure=structure,
+                            formula=attributes.get(
+                                "chemical_formula_reduced"
+                            ),
+                            elements=attributes.get(
+                                "elements",
+                                [],
+                            ),
+                            **provider_metadata,
+                        )
+                    )
 
-                failed += 1
+                except Exception as exception:
 
-                print(
-                    f"Failed {entry.get('id')}: "
-                    f"{exception}"
-                )
+                    failed += 1
+
+                    print(
+                        f"Failed {entry.get('id')}: "
+                        f"{exception}"
+                    )
+        except Exception as exception:
+
+            print()
+            print("=" * 70)
+            print(f"{self.database_name} download failed")
+            print("=" * 70)
+            print(exception)
+            print("=" * 70) 
 
         metadata_df = pd.DataFrame(metadata)
 
